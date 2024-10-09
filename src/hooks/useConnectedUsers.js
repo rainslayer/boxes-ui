@@ -7,6 +7,8 @@ function useConnectedUsers() {
   const [error, setError] = useState(false);
   
   useEffect(() => {
+    setLoading(loading);
+
     (async () => {
       try {
         const response = await Api.Sse.getConnectedUsers();
@@ -18,6 +20,8 @@ function useConnectedUsers() {
         }
       } catch (e) {
         setError(e.response?.data?.message ?? "Something went wrong");
+      } finally {
+        setLoading(false);
       }
      })();
    }, []);

@@ -7,6 +7,8 @@ function useCurrentGame() {
   const [error, setError] = useState(false);
   
   useEffect(() => {
+    setLoading(loading);
+
     (async () => {
       try {
         const response = await Api.Game.getCurrentGame();
@@ -18,6 +20,8 @@ function useCurrentGame() {
         }
       } catch (e) {
         setError(e.response?.data?.message ?? "Something went wrong");
+      } finally {
+        setLoading(false);
       }
      })();
    }, []);

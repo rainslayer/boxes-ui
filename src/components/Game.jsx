@@ -1,4 +1,4 @@
-import { Flex, useBreakpointValue } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import UserRewards from "./UserRewards";
 import ListOfPlayers from "./ListOfPlayers";
@@ -16,16 +16,10 @@ import StatisticLg from "./StatisticLg";
 import StatisticBase from "./StatisticBase";
 
 const ROUND_TIME = 2 * 60;
-
+  
 function Game() {
-  const breakpoint = useBreakpointValue({
-    sm: "sm",
-    md: "md",
-    lg: "lg",
-    xl: "xl",
-  });
   const { game, setGame, error } = useCurrentGame();
-  const [statisticWindow, setStatisticWindow] = useState(null);
+  const [statisticWindow, setStatisticWindow] = useState(StatisticWindowTypes.userRewards);
   const [timer, setTimer] = useState(null);
   const [previousReward, setPreviousReward] = useState(null);
   const { rewards, update: updateUserRewards } = useOwnedRewards();
@@ -42,12 +36,6 @@ function Game() {
   }, [game, error]);
 
   useEffect(() => {
-    if (["lg", "xl"].includes(breakpoint) && !statisticWindow) {
-      setStatisticWindow(StatisticWindowTypes.userRewards);
-    }
-  }, [breakpoint, statisticWindow]);
-
-  useEffect(() => {
     if (game && (!timerUpdateInterval.current || !timer)) {
       updateRoundTimer();
     }
@@ -60,9 +48,10 @@ function Game() {
   }, []);
 
   function reconnectToSse() {
-    clearSse();
-    sse.current = Api.Sse.getEventSource(); 
-
+    if (!sse.current) {
+      sse.current = Api.Sse.getEventSource();
+    }
+    
     sse.current.onmessage = async (event) => {
       const { data } = event;
       const { message, payload } = JSON.parse(data);

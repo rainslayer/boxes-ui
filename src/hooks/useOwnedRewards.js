@@ -13,6 +13,8 @@ function useOwnedRewards() {
    }, []);
 
   async function update() {
+    setLoading(true);
+
     try {
       const response = await Api.Rewards.getOwnedRewards();
 
@@ -23,6 +25,8 @@ function useOwnedRewards() {
       }
     } catch (e) {
       setError(e.response?.data?.message ?? "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   }
   
