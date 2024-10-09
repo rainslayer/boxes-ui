@@ -55,11 +55,13 @@ function Game() {
 
   useEffect(() => {
     reconnectToSse();
+
+    return () => clearSse();
   }, []);
 
   function reconnectToSse() {
     clearSse();
-    sse.current = Api.Sse.getEventSource();
+    sse.current = Api.Sse.getEventSource(); 
 
     sse.current.onmessage = async (event) => {
       const { data } = event;
@@ -108,7 +110,14 @@ function Game() {
       }
     };
 
-    sse.current.onerror = () => reconnectToSse();
+    sse.current.onerror = (e) => {
+      console.error('SSE error:', e);
+      reconnectToSse();
+    };
+  
+    sse.current.onopen = () => {
+      console.log('Connected to SSE.');
+    };
   }
 
   function clearSse() {
