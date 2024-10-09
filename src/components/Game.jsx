@@ -50,10 +50,6 @@ function Game() {
   useEffect(() => {
     if (game && (!timerUpdateInterval.current || !timer)) {
       updateRoundTimer();
-
-      return () => {
-        clearRoundTimer();
-      }
     }
   }, [game, timerUpdateInterval, timer]);
 
