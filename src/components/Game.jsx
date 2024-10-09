@@ -55,10 +55,6 @@ function Game() {
 
   useEffect(() => {
     reconnectToSse();
-
-    return () => {
-      clearSse();
-    }
   }, []);
 
   function reconnectToSse() {
